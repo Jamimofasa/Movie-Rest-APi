@@ -25,32 +25,34 @@ public class MovieRestController {
     @GetMapping("/movies/{id}")
     public Movie getOneMovie(@PathVariable int id)
     {
-        return movieService.getMovie(id);
+        Movie movie = movieService.getMovie(id);
+
+        if (movie == null)
+            throw new RuntimeException(String.format("No Movie %d Found", id));
+
+        return movie;
     }
 
     //Add a movie
     @PostMapping("/movies")
-    public Movie addMovie(@RequestBody Movie movie){
-
+    public Movie addMovie(@RequestBody Movie movie)
+    {
         return movieService.addMovie(movie);
     }
-
-
 
     //Update movie info
     @PutMapping("/movies/{id}")
     public Movie updateMovie(@RequestBody Movie movie,@PathVariable int id)
     {
-
         return movieService.updateMovie(movie,id);
-
     }
 
     //Delete movie
     @DeleteMapping("/movies/{id}")
-    public Movie deleteMovie(@PathVariable int id)
+    public void deleteMovie(@PathVariable int id)
     {
-        return movieService.deleteMovie(id);
+        if (movieService.deleteMovie(id) == null)
+            throw new RuntimeException(String.format("No Movie %d Found", id));
     }
 
 

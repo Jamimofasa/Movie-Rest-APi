@@ -17,7 +17,7 @@ public class MovieService {
 
     static {
 
-        moviesList.add(new Movie(1,"Avengers: Age of Ultron",141 ,"May 1, 2015" , 495.2));
+        moviesList.add(new Movie(1,"Avengers: Age of Ultron",141 ,"5/2/25" , 495.2));
         moviesList.add(new Movie(2,"Star Wars: Episode IV - A New Hope",121 ,"May 25, 1977" , 11));
         moviesList.add(new Movie(3,"Blazing Saddles",93 ,"February 7, 1974" , 119.6));
 
@@ -47,15 +47,8 @@ public class MovieService {
     //add a movie
     public Movie addMovie(Movie movie)
     {
-        Iterator<Movie> iterator = moviesList.iterator();
-        while (iterator.hasNext())
-        {
-            Movie tempMovie = iterator.next();
 
-            if (tempMovie.getId() == movie.getId()) {
-                movie.setId(++idCount);
-            }
-        }
+        movie.setId(++idCount);
 
         moviesList.add(movie);
         return movie;

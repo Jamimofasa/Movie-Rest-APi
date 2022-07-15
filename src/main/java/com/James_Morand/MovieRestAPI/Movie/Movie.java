@@ -1,5 +1,13 @@
 package com.James_Morand.MovieRestAPI.Movie;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
+
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+
 public class Movie {
 
 
@@ -10,6 +18,9 @@ public class Movie {
     // Date movie wa released
     // How much did it cost to make
     private int id;
+
+    @NotNull
+    @Size(max = 30)
     private String name;
     private int movieLength;
     private String releaseDate;
