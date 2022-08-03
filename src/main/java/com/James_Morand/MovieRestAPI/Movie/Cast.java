@@ -24,11 +24,11 @@ public class Cast {
     @GeneratedValue
     private int id;
 
-    @OneToOne
-    private Movie movie;
-
-    @ManyToMany
-    private List<Actor> actors;
+//    @OneToOne
+//    private Movie movie;
+//
+//    @ManyToMany
+//    private List<Actor> actors;
 
 
 
