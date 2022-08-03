@@ -2,6 +2,7 @@ package com.James_Morand.MovieRestAPI.Contoller;
 
 
 import com.James_Morand.MovieRestAPI.Movie.Movie;
+import com.James_Morand.MovieRestAPI.Repository.MovieRepository;
 import com.James_Morand.MovieRestAPI.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,10 @@ import java.util.List;
 @RestController
 public class MovieRestController {
 
+
     @Autowired
     private MovieService movieService ;
+
 
     //Get all movies
     @GetMapping("/movies")
@@ -22,8 +25,8 @@ public class MovieRestController {
     }
 
     //Get one movie
-    @GetMapping("/movies/{id}")
-    public Movie getOneMovie(@PathVariable int id)
+    @GetMapping("/movie/{id}")
+    public Movie getMovie(@PathVariable int id)
     {
         Movie movie = movieService.getMovie(id);
 
@@ -34,21 +37,21 @@ public class MovieRestController {
     }
 
     //Add a movie
-    @PostMapping("/movies")
+    @PostMapping("/movie")
     public Movie addMovie(@RequestBody Movie movie)
     {
         return movieService.addMovie(movie);
     }
 
     //Update movie info
-    @PutMapping("/movies/{id}")
+    @PutMapping("/movie/{id}")
     public Movie updateMovie(@RequestBody Movie movie,@PathVariable int id)
     {
         return movieService.updateMovie(movie,id);
     }
 
     //Delete movie
-    @DeleteMapping("/movies/{id}")
+    @DeleteMapping("/movie/{id}")
     public void deleteMovie(@PathVariable int id)
     {
         if (movieService.deleteMovie(id) == null)

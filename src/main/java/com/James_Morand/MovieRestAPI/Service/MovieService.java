@@ -1,25 +1,34 @@
 package com.James_Morand.MovieRestAPI.Service;
 
 import com.James_Morand.MovieRestAPI.Movie.Movie;
+import com.James_Morand.MovieRestAPI.Repository.MovieRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+
 @Component
-public class MovieService {
+public class MovieService  {
+
+    @Autowired
+    private MovieRepository movieRepository;
 
     public Random random;
     public static List<Movie> moviesList = new ArrayList<>();
     private int idCount =moviesList.size();
 
+
+//populate movielist
     static {
 
-        moviesList.add(new Movie(1,"Avengers: Age of Ultron",141 ,"5/2/25" , 495.2));
-        moviesList.add(new Movie(2,"Star Wars: Episode IV - A New Hope",121 ,"May 25, 1977" , 11));
-        moviesList.add(new Movie(3,"Blazing Saddles",93 ,"February 7, 1974" , 119.6));
+        Movie m = new Movie(1,"Avengers: Age of Ultron",141 ,"5/2/25" , 495.2, null);
+
+        moviesList.add(m);
+        moviesList.add(new Movie(2,"Star Wars: Episode IV - A New Hope",121 ,"May 25, 1977" , 11, null));
+        moviesList.add(new Movie(3,"Blazing Saddles",93 ,"February 7, 1974" , 119.6, null));
 
     }
 
@@ -39,6 +48,7 @@ public class MovieService {
             Movie movie = iterator.next();
             if (movie.getId() == id)
                 return movie;
+
         }
 
         return null;
@@ -50,7 +60,12 @@ public class MovieService {
 
         movie.setId(++idCount);
 
-        moviesList.add(movie);
+
+        //Add Movie to Repository
+        movieRepository.save(movie);
+
+        //Add Movie to List for postman
+//        moviesList.add(movie);
         return movie;
     }
 
@@ -64,6 +79,8 @@ public class MovieService {
             Movie movie = iterator.next();
             if (movie.getId() == id) {
                 iterator.remove();
+                //Delete from repository
+                movieRepository.delete(movie);
                 return movie;
             }
         }
@@ -94,5 +111,6 @@ public class MovieService {
 
         return movie;
     }
+
 
 }
