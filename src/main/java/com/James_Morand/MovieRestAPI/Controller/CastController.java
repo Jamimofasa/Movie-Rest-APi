@@ -41,9 +41,7 @@ public class CastController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Replace the actor list of a cast")
-    public ResponseEntity<Cast> updateCast(
-            @PathVariable int id,
-            @RequestBody Cast cast) {
+    public ResponseEntity<Cast> updateCast( @PathVariable int id, @RequestBody Cast cast) {
         return ResponseEntity.ok(castService.updateCast(id, cast));
     }
 

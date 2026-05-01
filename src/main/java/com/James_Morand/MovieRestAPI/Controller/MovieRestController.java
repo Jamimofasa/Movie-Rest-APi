@@ -4,6 +4,7 @@ package com.James_Morand.MovieRestAPI.Controller;
 import com.James_Morand.MovieRestAPI.Movie.Movie;
 import com.James_Morand.MovieRestAPI.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,36 +26,32 @@ public class MovieRestController {
 
     //Get one movie
     @GetMapping("/movie/{id}")
-    public Movie getMovie(@PathVariable int id)
+    public ResponseEntity<Movie> getMovie(@PathVariable int id)
     {
         Movie movie = movieService.getMovie(id);
-
-        if (movie == null)
-            throw new RuntimeException(String.format("No Movie %d Found", id));
-
-        return movie;
+        return ResponseEntity.ok(movie);
     }
 
     //Add a movie
     @PostMapping("/movie")
-    public Movie addMovie(@RequestBody Movie movie)
+    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie)
     {
-        return movieService.addMovie(movie);
+        return ResponseEntity.ok(movieService.addMovie(movie));
     }
 
     //Update movie info
     @PutMapping("/movie/{id}")
-    public Movie updateMovie(@RequestBody Movie movie,@PathVariable int id)
+    public ResponseEntity<Movie> updateMovie(@RequestBody Movie movie,@PathVariable int id)
     {
-        return movieService.updateMovie(movie,id);
+        return ResponseEntity.ok(movieService.updateMovie(id, movie));
     }
 
     //Delete movie
     @DeleteMapping("/movie/{id}")
-    public void deleteMovie(@PathVariable int id)
+    public ResponseEntity<Void> deleteMovie(@PathVariable int id)
     {
-        if (movieService.deleteMovie(id) == null)
-            throw new RuntimeException(String.format("No Movie %d Found", id));
+        movieService.deleteMovie(id);
+        return ResponseEntity.noContent().build();
     }
 
 
