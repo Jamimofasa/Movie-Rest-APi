@@ -1,8 +1,7 @@
-package com.James_Morand.MovieRestAPI.Contoller;
+package com.James_Morand.MovieRestAPI.Controller;
 
 
 import com.James_Morand.MovieRestAPI.Movie.Movie;
-import com.James_Morand.MovieRestAPI.Repository.MovieRepository;
 import com.James_Morand.MovieRestAPI.Service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

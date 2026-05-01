@@ -1,102 +1,51 @@
 package com.James_Morand.MovieRestAPI.Service;
 
+import com.James_Morand.MovieRestAPI.Exception.DuplicateResourceException;
+import com.James_Morand.MovieRestAPI.Exception.ResourceNotFoundException;
 import com.James_Morand.MovieRestAPI.Movie.Actor;
-import org.springframework.stereotype.Component;
+import com.James_Morand.MovieRestAPI.Repository.ActorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
-@Component
+@Service
 public class ActorService {
 
-    public Random random;
-    public static List<Actor> actors = new ArrayList<>();
-    private int idCount = actors.size();
+    @Autowired
+    private ActorRepository actorRepository;
 
-
-
-
-//    static {
-//
-//        moviesList.add(new Movie(1,"Avengers: Age of Ultron",141 ,"5/2/25" , 495.2));
-//        moviesList.add(new Movie(2,"Star Wars: Episode IV - A New Hope",121 ,"May 25, 1977" , 11));
-//        moviesList.add(new Movie(3,"Blazing Saddles",93 ,"February 7, 1974" , 119.6));
-//
-//    }
-
-    //Get all Actor
-    public List<Actor> getAllActor()
-    {
-        return actors;
+    public List<Actor> getAllActors() {
+        return actorRepository.findAll();
     }
 
-    //Get one Actor
-    public Actor getActor(int id)
-    {
-        Iterator<Actor> iterator = actors.iterator();
+    public Actor getActor(int id) {
+        return actorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Actor not found with id: " + id));
+    }
 
-        while (iterator.hasNext())
-        {
-            Actor Actor = iterator.next();
-            if (Actor.getId() == id)
-                return Actor;
+    public Actor addActor(Actor actor) {
+        if (actorRepository.existsByNameIgnoreCase(actor.getName())) {
+            throw new DuplicateResourceException(
+                "An actor named '" + actor.getName() + "' already exists");
         }
-
-        return null;
+        actor.setId(0);
+        return actorRepository.save(actor);
     }
 
-    //add a Actor
-    public Actor addActor(Actor actor)
-    {
-
-        actor.setId(++idCount);
-
-
-        actors.add(actor);
-        return actor;
+    public Actor updateActor(int id, Actor actor) {
+        Actor existing = getActor(id);
+        existing.setName(actor.getName());
+        existing.setAge(actor.getAge());
+        return actorRepository.save(existing);
     }
 
-    //Delete Actor
-    public Actor deleteActor(int id)
-    {
-        Iterator<Actor> iterator = actors.iterator();
-
-        while (iterator.hasNext())
-        {
-            Actor actor = iterator.next();
-            if (actor.getId() == id) {
-                iterator.remove();
-                return actor;
-            }
-        }
-
-        return null;
+    public void deleteActor(int id) {
+        Actor actor = getActor(id);
+        actorRepository.delete(actor);
     }
 
-    //Update Actor
-    public Actor updateActor(Actor actor, int id)
-    {
-        Iterator<Actor> iterator = actors.iterator();
-
-        while (iterator.hasNext())
-        {
-            Actor actors_ = iterator.next();
-            if (actors_.getId() == id) {
-
-                actors_.setAge(actor.getAge());
-                actors_.setName(actor.getName());
-                // add actor to list of actors
-
-                return actors_;
-            }
-
-        }
-
-        actor.setId(id);
-
-        return actor;
+    public List<Actor> searchByName(String name) {
+        return actorRepository.findByNameContainingIgnoreCase(name);
     }
-
 }

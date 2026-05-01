@@ -1,4 +1,4 @@
-package com.James_Morand.MovieRestAPI;
+package com.James_Morand.MovieRestAPI.Config;
 
 
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
         private ApiInfo apiInfoMetaData() {
 
-            return new ApiInfoBuilder().title("NAME OF SERVICE")
+            return new ApiInfoBuilder().title("MOVIE SERVICE")
                     .description("API Endpoint Decoration")
                     .contact(new Contact("Dev-Team", "https://www.dev-team.com/", "dev-team@gmail.com"))
                     .license("Apache 2.0")

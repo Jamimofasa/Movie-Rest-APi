@@ -1,90 +1,79 @@
 package com.James_Morand.MovieRestAPI.Service;
 
+import com.James_Morand.MovieRestAPI.Exception.DuplicateResourceException;
+import com.James_Morand.MovieRestAPI.Exception.ResourceNotFoundException;
+import com.James_Morand.MovieRestAPI.Movie.Actor;
 import com.James_Morand.MovieRestAPI.Movie.Cast;
-import org.springframework.stereotype.Component;
+import com.James_Morand.MovieRestAPI.Repository.ActorRepository;
+import com.James_Morand.MovieRestAPI.Repository.CastRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Past;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-@Component
+@Service
 public class CastService {
 
-    private static List<Cast> casts = new ArrayList<>();
-    private int idCount = casts.size();
+    @Autowired
+    private CastRepository castRepository;
 
-    public List<Cast> getCasts()
-    {
-        return casts;
+    @Autowired
+    private ActorRepository actorRepository;
+
+    public List<Cast> getAllCast() {
+        return castRepository.findAll();
     }
 
-    public Cast getCast(int id)
-    {
-        Iterator<Cast> iterator = casts.iterator();
+    public Cast getCast(int id) {
+        return castRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cast not found with id: " + id));
+    }
 
-        while (iterator.hasNext())
-        {
-            Cast cast = iterator.next();
+    public Cast addCast(Cast cast) {
+        cast.setId(0);
+        return castRepository.save(cast);
+    }
 
-            if (cast.getId() == id)
-            {
-                return cast;
-            }
+    public Cast updateCast(int id, Cast updatedCast) {
+        Cast existing = getCast(id);
+        existing.setActors(updatedCast.getActors());
+        return castRepository.save(existing);
+    }
+
+    public void deleteCast(int id) {
+        castRepository.delete(getCast(id));
+    }
+
+    /**
+     * Add an existing actor to a cast.
+     * Throws DuplicateResourceException if the actor is already in this cast.
+     */
+    public Cast addActorToCast(int castId, int actorId) {
+        Cast cast = getCast(castId);
+        Actor actor = actorRepository.findById(actorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Actor not found with id: " + actorId));
+
+        boolean alreadyInCast = cast.getActors().stream()
+                .anyMatch(a -> a.getId() == actorId);
+
+        if (alreadyInCast) {
+            throw new DuplicateResourceException(
+                "Actor '" + actor.getName() + "' (id: " + actorId + ") is already in cast id: " + castId);
         }
 
-        return null;
+        cast.getActors().add(actor);
+        return castRepository.save(cast);
     }
 
-    //add a cast
-    public Cast addCast(Cast cast)
-    {
+    /**
+     * Remove an actor from a cast.
+     */
+    public Cast removeActorFromCast(int castId, int actorId) {
+        Cast cast = getCast(castId);
+        Actor actor = actorRepository.findById(actorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Actor not found with id: " + actorId));
 
-        cast.setId(++idCount);
-
-
-        casts.add(cast);
-        return cast;
+        cast.getActors().remove(actor);
+        return castRepository.save(cast);
     }
-
-    //Delete cast
-    public Cast deleteCast(int id)
-    {
-        Iterator<Cast> iterator = casts.iterator();
-
-        while (iterator.hasNext())
-        {
-            Cast cast = iterator.next();
-            if (cast.getId() == id) {
-                iterator.remove();
-                return cast;
-            }
-        }
-
-        return null;
-    }
-
-    //Update cast
-    public Cast updateCast(Cast cast, int id)
-    {
-        Iterator<Cast> iterator = casts.iterator();
-
-        while (iterator.hasNext())
-        {
-            Cast casts_ = iterator.next();
-            if (casts_.getId() == id) {
-
-
-                // add Cast to list of actors
-
-                return casts_;
-            }
-
-        }
-
-        cast.setId(id);
-
-        return cast;
-    }
-
 }
